@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Url, UrlDocument } from './url-shortener.schema';
 import { ShortenUrlDTO } from './dto/shorten-url.dto';
@@ -50,6 +50,17 @@ export class UrlShortenerService {
       return this.generateUrlId(retry - 1);
     } else {
       return urlId;
+    }
+  }
+  async getOriginalUrl(urlId: string): Promise<string> {
+    const url = await this.urlModel.findOne({
+      urlId,
+    });
+
+    if (url) {
+      return url.originalUrl;
+    } else {
+      throw new HttpException('Invalid url id', HttpStatus.NOT_FOUND);
     }
   }
 }
