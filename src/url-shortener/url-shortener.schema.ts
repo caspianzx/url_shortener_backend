@@ -3,12 +3,12 @@ import { HydratedDocument } from 'mongoose';
 
 export type UrlDocument = HydratedDocument<Url>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Url {
-  @Prop({ required: true })
+  @Prop({ required: true, type: String, unique: true })
   shortened: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, type: String })
   original: string;
 }
 
