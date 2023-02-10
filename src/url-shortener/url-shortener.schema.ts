@@ -6,10 +6,13 @@ export type UrlDocument = HydratedDocument<Url>;
 @Schema({ timestamps: true })
 export class Url {
   @Prop({ required: true, type: String, unique: true })
-  shortened: string;
+  shortUrl: string;
 
-  @Prop({ required: true, type: String })
-  original: string;
+  @Prop({ required: true, type: String, unique: true })
+  urlId: string;
+
+  @Prop({ required: true, type: String, unique: true })
+  originalUrl: string;
 }
 
 export const UrlSchema = SchemaFactory.createForClass(Url);

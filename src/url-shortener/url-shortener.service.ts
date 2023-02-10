@@ -10,25 +10,46 @@ export class UrlShortenerService {
   constructor(@InjectModel(Url.name) private urlModel: Model<UrlDocument>) {}
 
   async shortenUrl(shortenUrlDto: ShortenUrlDTO): Promise<string> {
+    // validate original url to check if it exists
+    const url = await this.urlModel.findOne({
+      originalUrl: shortenUrlDto.originalUrl,
+    });
 
-    const shortened = nanoid(10)
-    // test code. will change the logic later
-    // const shortened = `abcde ${Math.floor(Math.random() * 10000)}`;
-    const url = {
-      shortened,
-      original: shortenUrlDto.originalUrl,
-    };
+    if (url) {
+      return url.shortUrl;
+    } else {
+      const urlId = await this.generateUrlId();
+      // validate shorten id to ensure that it is unique
 
-    const createdUrlDoc = new this.urlModel(url);
+      const shortUrl = `${process.env.BASE}/${urlId}`;
+      const newUrlDoc = {
+        shortUrl,
+        originalUrl: shortenUrlDto.originalUrl,
+        urlId,
+      };
 
-    await createdUrlDoc.save();
+      const createdUrlDoc = new this.urlModel(newUrlDoc);
 
-    return shortened;
-    // const createdCat = new this.catModel(createCatDto);
-    // return createdCat.save();
+      await createdUrlDoc.save();
+
+      return shortUrl;
+    }
   }
 
-  // async findAll(): Promise<Cat[]> {
-  //   return this.catModel.find().exec();
-  // }
+  // generate url id should handle key Collision
+  // set max retry at 3 to prevent excessive recursion
+  async generateUrlId(retry = 3): Promise<string> {
+    if (retry <= 0) {
+      throw new Error('maximum number of key collision retries reached!');
+    }
+
+    const urlId = nanoid(10);
+    const existingId = await this.urlModel.findOne({ urlId });
+
+    if (existingId) {
+      return this.generateUrlId(retry - 1);
+    } else {
+      return urlId;
+    }
+  }
 }
