@@ -12,7 +12,7 @@ export class UrlShortenerController {
   }
 
   @Get('get-original-url/:id')
-  async getOriginalLink(@Param() params, @Res() res: Response): Promise<any> {
+  async getOriginalUrl(@Param() params, @Res() res: Response): Promise<any> {
     const originalUrl = await this.urlShortenerService.getOriginalUrl(
       params.id,
     );
