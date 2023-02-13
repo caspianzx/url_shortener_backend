@@ -43,7 +43,7 @@ export class UrlShortenerService {
       throw new Error('maximum number of key collision retries reached!');
     }
 
-    const urlId = nanoid(10);
+    const urlId = nanoid(8);
     const existingId = await this.urlModel.findOne({ urlId });
 
     if (existingId) {
