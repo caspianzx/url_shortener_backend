@@ -9,14 +9,14 @@ import { nanoid } from 'nanoid';
 export class UrlShortenerService {
   constructor(@InjectModel(Url.name) private urlModel: Model<UrlDocument>) {}
 
-  async shortenUrl(shortenUrlDto: ShortenUrlDTO): Promise<string> {
+  async shortenUrl(shortenUrlDto: ShortenUrlDTO): Promise<any> {
     // validate original url to check if it exists
     const url = await this.urlModel.findOne({
       originalUrl: shortenUrlDto.originalUrl,
     });
 
     if (url) {
-      return url.shortUrl;
+      return { shortenedUrl: url.shortUrl };
     } else {
       const urlId = await this.generateUrlId();
       // validate shorten id to ensure that it is unique
@@ -32,7 +32,7 @@ export class UrlShortenerService {
 
       await createdUrlDoc.save();
 
-      return shortUrl;
+      return { shortenedUrl: shortUrl };
     }
   }
 

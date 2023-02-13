@@ -7,7 +7,7 @@ import { Response } from 'express';
 export class UrlShortenerController {
   constructor(private readonly urlShortenerService: UrlShortenerService) {}
   @Post('shorten-url')
-  async shortenUrl(@Body() shortenUrlDTO: ShortenUrlDTO): Promise<string> {
+  async shortenUrl(@Body() shortenUrlDTO: ShortenUrlDTO): Promise<any> {
     return await this.urlShortenerService.shortenUrl(shortenUrlDTO);
   }
 
