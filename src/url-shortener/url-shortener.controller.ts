@@ -6,16 +6,16 @@ import { Response } from 'express';
 @Controller()
 export class UrlShortenerController {
   constructor(private readonly urlShortenerService: UrlShortenerService) {}
-  @Post('shorten-url')
+  @Post('/api/shorten-url')
   async shortenUrl(@Body() shortenUrlDTO: ShortenUrlDTO): Promise<any> {
     return await this.urlShortenerService.shortenUrl(shortenUrlDTO);
   }
 
-  @Get('get-original-url/:id')
+  @Get('/:id')
   async getOriginalUrl(@Param() params, @Res() res: Response): Promise<any> {
     const originalUrl = await this.urlShortenerService.getOriginalUrl(
       params.id,
     );
-    res.redirect(originalUrl);
+    res.redirect(301, originalUrl);
   }
 }

@@ -60,6 +60,7 @@ export class UrlShortenerService {
     if (url) {
       return url.originalUrl;
     } else {
+      // to create an error page if there is time
       throw new HttpException('Invalid url id', HttpStatus.NOT_FOUND);
     }
   }
